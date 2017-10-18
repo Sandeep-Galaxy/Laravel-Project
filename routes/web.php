@@ -19,6 +19,8 @@ Auth::routes();
 
 Route::get('/blog', 'BlogController@index')->name('blog');
 
+Route::get('/post/{post}', 'BlogController@post')->name('post');
+
 
 Route::group(array('middleware' => ['auth', 'user']), function () {
 
@@ -49,6 +51,16 @@ Route::group(array('prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 
 		Route::post('/post', 'PostsController@store');
 
 		Route::get('posts','PostsController@index');
+		Route::get('editpost/{post}','PostsController@edit');
+		Route::post('updatepost/{post}','PostsController@updatepost');
+
+
+
+		Route::post('detpost/{post}', 'PostsController@deactive');
+		Route::post('actpost/{post}', 'PostsController@active');
+		Route::delete('delpost/{post}', 'PostsController@destroy');
+
+
 
 
 		Route::post('/profile_update','ProfileController@update');

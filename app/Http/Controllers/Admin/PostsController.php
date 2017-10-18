@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 use App\User;
 use App\Post;
@@ -67,51 +68,111 @@ class PostsController extends Controller
 	        'title' => $request->title,
 	        'summary' => $request->summary,
 	        'content' => $request->content,
-	        'slug'	  => substr($request->title, 0, 5),
+	        'slug'	  => substr(str_replace(' ', '', $request->title), 0, 5),
 	    ]);
 
 
 	    return redirect('admin/posts');
 	}
 
-
 	/**
-	 * Update Profile.
+	 * Activate Post.
 	 *
 	 * @param  Request  $request
 	 * @return Response
 	 */
-	public function update(Request $request)
+	public function active(Request $request, $post)
+	{               
+		DB::table('posts')
+            ->where('id', $post)
+            ->update(['active' => 1]);
+
+       	return redirect('admin/posts');
+
+	}
+
+
+	/**
+	 * Deactivate Post.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function deactive(Request $request, $post)
+	{
+		
+		DB::table('posts')
+            ->where('id', $post)
+            ->update(['active' => 0]);
+
+       	return redirect('admin/posts');
+
+	}
+
+	/**
+	 * Edit Post.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function edit(Request $request, $post)
+	{
+		
+		return view('admin.edit',[
+			
+			'post' => DB::table('posts')
+            			->where('id', $post)
+            			->get(),
+
+			]);
+
+	}
+
+	/**
+	 * Destroy the given post.
+	 *
+	 * @param  Request  $request
+	 * @param  Post  $post
+	 * @return Response
+	 */
+	public function destroy(Request $request, Post $post)
+	{
+	    
+	    // Delete The Task...
+	    $post->delete();
+
+    	return redirect('admin/posts');
+	}
+
+	/**
+	 * Update Post.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function updatepost(Request $request, $post)
 	{
 	    $this->validate($request, [
-	        'name' => 'required|max:255',
-	        'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-	        'password' => 'required|string|min:6|confirmed',
+	        'title' => 'required|max:255',
+	        'summary' => 'required',
+	        'content' => 'required',
 	    ]);
 
-	    if($request->hasFile('avatar')){
-    		$avatar = $request->file('avatar');
-    		$filename = time() . '.' . $avatar->getClientOriginalExtension();
-    		Image::make($avatar)->resize(300, 300)->save( public_path('uploads/avatars/' . $filename ) );
-    	}
 
-	    // Update Name...
-		$user = $request->user();
-
-		// Update Image path
-		if(!empty($filename))
-    	$user->avatar = $filename;
-    	
+		    $update = DB::table('posts')
+			            ->where('id', $post)
+			            ->update([
+			            	'title' => $request->title,
+			            	'summary' => $request->summary,
+			            	'content' => $request->content,
+			            	]);
 	    
-	    $user->name = $request->name;
-	    $user->password = bcrypt($request->password);
-	    
-	    if($user->save())
-	    $request->session()->flash('alert-success', 'Profile updation successfull!');
+	    if($update)
+	    $request->session()->flash('alert-success', 'Post updation successfull!');
 		else
-		$request->session()->flash('alert-danger', 'Profile updation fail!');
+		$request->session()->flash('alert-danger', 'Post updation fail!');
 			
 
-	   	return redirect('admin/profile');
+	   	return redirect('admin/editpost/'.$post);
 	}
 }

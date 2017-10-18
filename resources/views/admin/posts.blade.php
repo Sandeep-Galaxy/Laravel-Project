@@ -31,16 +31,36 @@
                             <tr>
                             <!-- Task Name -->
                             <td class="table-text">
-                                <div>{{ $post->title }}</div>
+                                <div><a href="{{url('admin/editpost/'.$post->id)}}">{{ $post->title }}</a></div>
+                            </td>
+
+                            <!-- Activate/Deactivate Button -->
+                            <td>
+                                @if ( $post->active != 1)
+                                <form action="{{ url('admin/actpost/'.$post->id) }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <button type="submit" id="activate-post-{{ $post->id }}" class="btn btn-primary">
+                                        <i class="fa fa-btn fa-button"></i>Activate
+                                    </button>
+                                </form>
+                                @else    
+                                <form action="{{ url('admin/detpost/'.$post->id) }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <button type="submit" id="deactivate-post-{{ $post->id }}" class="btn btn-warning">
+                                        <i class="fa fa-btn fa-button"></i>Deactivate
+                                    </button>
+                                </form>
+                                @endif
+
                             </td>
 
                             <!-- Delete Button -->
                             <td>
-                                <form action="{{ url('admin/post/'.$post->id) }}" method="POST">
+                                <form action="{{ url('admin/delpost/'.$post->id) }}" method="POST">
                                     {{ csrf_field() }}
                                     {{ method_field('DELETE') }}
 
-                                    <button type="submit" id="delete-task-{{ $post->id }}" class="btn btn-danger">
+                                    <button type="submit" id="delete-post-{{ $post->id }}" class="btn btn-danger">
                                         <i class="fa fa-btn fa-trash"></i>Delete Post
                                     </button>
                                 </form>

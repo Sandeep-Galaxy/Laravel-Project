@@ -95,6 +95,7 @@
                         <a href="{{ url('/logout') }}">Logout</a>
                     @else
                         <a href="{{ route('root') }}">Home</a>
+                        <a href="{{ route('blog') }}">Blog</a>
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>
                     @endauth
