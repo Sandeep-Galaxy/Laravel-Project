@@ -11,7 +11,7 @@ class TaskPolicy
     use HandlesAuthorization;
 
     /**
-     * Create a new policy instance.
+     * Create a new policy instance.i
      *
      * @return void
      */

@@ -1,5 +1,5 @@
 <?php
-
+use App\Bear,App\Tree,App\Picnic,App\Fish;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +16,15 @@ Route::get('/', function () {
 })->name('root');
 
 Auth::routes();
+
+Route::get('eloquent', function() {
+
+        return View::make('bear.bear')
+
+            // all the bears (will also return the fish, trees, and picnics that belong to them)
+            ->with('bears', Bear::all());
+
+    });
 
 Route::get('/blog', 'BlogController@index')->name('blog');
 
@@ -44,6 +53,7 @@ Route::group(array('prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 
 		Route::get('profile','ProfileController@index');
 
 		Route::get('users','UsersController@users');
+		Route::delete('user/{user}', 'UsersController@deleteuser');
 
 		Route::get('logout', 'UsersController@logout');
 

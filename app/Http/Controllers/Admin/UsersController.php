@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\User;
 
 class UsersController extends Controller
@@ -52,6 +53,17 @@ class UsersController extends Controller
     public function logout(){
         Auth::logout();
         return redirect()->route('root');
+    }
+
+    public function deleteuser(Request $request, User $user){
+    
+        $this->authorize('deleteuser', $user);
+
+        DB::table('users')
+            ->where('id', $user->id)
+            ->delete();
+
+        return redirect('admin/users');
     }
 
 }

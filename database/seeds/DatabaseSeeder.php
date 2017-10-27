@@ -160,6 +160,10 @@ class DatabaseSeeder extends Seeder
 			'active'	=> 1
 		]);
 
+		$this->call([
+        BearsTableSeeder::class,
+    ]);
+
 
 		
     }

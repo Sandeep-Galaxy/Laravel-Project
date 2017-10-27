@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\CustomNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -58,6 +59,11 @@ class User extends Authenticatable
     public function isUser()
     {
         return ($this->usertype_id === 2); // this looks for an user column in your users table
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomNotification($token));
     }
 
     
